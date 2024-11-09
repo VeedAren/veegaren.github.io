@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кликер VA Coin</title>
+<style>
+  body {
+    text-align: center;
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #3498db, #e74c3c);
+    color: white;
+    user-select: none; /* Отключаем выделение текста */
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  #coin {
+    font-size: 100px;
+    cursor: pointer;
+    margin: 20px auto;
+    transition: transform 0.1s;
+    position: relative;
+  }
+  .click-text {
+    position: absolute;
+    color: gold;
+    font-size: 24px;
+    animation: clickTextAnimation 1s forwards;
+  }
+  @keyframes clickTextAnimation {
+    0% { opacity: 1; transform: translateY(0); }
+    70% { opacity: 1; transform: translateY(30px); }
+    100% { opacity: 0; transform: translateY(50px); }
+  }
+</style>
+</head>
+<body>
+  <div id="balance">Баланс: 0 VA coins</div>
+  <div id="coin">🍓</div>
+
+  <script>
+    let balance = localStorage.getItem('balance') ? parseInt(localStorage.getItem('balance')) : 0;
+    let coinsPerClick = 1;
+
+    function updateBalance() {
+      document.getElementById('balance').textContent = `Баланс: ${balance} VA coins`;
+      localStorage.setItem('balance', balance);
+    }
+
+    document.getElementById('coin').addEventListener('click', function() {
+      balance += coinsPerClick;
+      updateBalance();
+      
+      document.getElementById('coin').style.transform = 'scale(0.9)';
+      setTimeout(() => {
+        document.getElementById('coin').style.transform = 'scale(1)';
+      }, 100);
+      
+      const clickText = document.createElement('div');
+      clickText.textContent = `+${coinsPerClick}`;
+      clickText.classList.add('click-text');
+      clickText.style.top = '60%';
+      clickText.style.left = '50%';
+      clickText.style.transform = 'translateX(-50%)';
+      document.getElementById('coin').appendChild(clickText);
+      
+      setTimeout(() => {
+        clickText.remove();
+      }, 1000);
+    });
+
+    window.addEventListener('beforeunload', function() {
+      localStorage.setItem('balance', balance);
+    });
+
+    updateBalance();
+  </script>
+</body>
+</html>
